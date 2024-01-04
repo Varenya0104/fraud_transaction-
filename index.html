@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fraud Detection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: url('https://res.cloudinary.com/rsmglobal/image/fetch/t_default/f_auto/q_auto/https://www.rsm.global/sites/default/files/media/backgrounds/services-page-top-banner-3840x960px_Fraud-Prevention-Services-green.png') center/cover no-repeat; 
+    }
+
+    h1 {
+      color: #ffffff; /* Text color for better visibility on the background image */
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+      margin: 20px;
+      box-sizing: border-box;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result-container {
+      background-color: rgba(255, 255, 255, 0.8); 
+      padding: 20px; 
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #result {
+      color: #ffffff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fraud Detection</h1>
+
+  <form id="transactionForm">
+    <label for="amount">Transaction Amount:</label>
+    <input type="number" id="amount" name="amount" required>
+
+    <label for="frequency">Transaction Frequency:</label>
+    <input type="number" id="frequency" name="frequency" required>
+
+    <button type="button" id="detectButton">Detect Fraud</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    async function detectFraud() {
+      const amount = document.getElementById('amount').value;
+      const frequency = document.getElementById('frequency').value;
+
+      try {
+        const response = await fetch('http://localhost:3000/detect-fraud', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ transactionAmount: amount, frequency }),
+        });
+
+        const data = await response.json();
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `<p>Transaction Amount: ${data.amount}</p>`;
+        resultDiv.innerHTML += `<p>Transaction Frequency: ${data.frequency}</p>`;
+        resultDiv.innerHTML += `<p>Fraudulent: ${data.isFraudulent ? 'Yes' : 'No'}</p>`;
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    }
+
+    document.getElementById('detectButton').addEventListener('click', detectFraud);
+  </script>
+</body>
+</html>
